@@ -1,0 +1,287 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Angular CRUD</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/8.11.8/sweetalert2.all.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/8.11.8/sweetalert2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
+    <style>
+        .wrapper {
+            margin: 3em 0;
+        }
+
+        a, a:visited, a:hover, a:active {
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            position: relative;
+            transition: 0.5s color ease;
+            text-decoration: none;
+            color: #81b3d2;
+            font-size: 2.5em;
+        }
+
+            a:hover {
+                color: #d73444;
+            }
+
+            a.before:before, a.after:after {
+                content: "";
+                transition: 0.5s all ease;
+                -webkit-backface-visibility: hidden;
+                backface-visibility: hidden;
+                position: absolute;
+            }
+
+            a.before:before {
+                top: -0.25em;
+            }
+
+            a.after:after {
+                bottom: -0.25em;
+            }
+
+            a.before:before, a.after:after {
+                height: 5px;
+                height: 0.35rem;
+                width: 0;
+                background: #d73444;
+            }
+
+            a.first:after {
+                left: 0;
+            }
+
+            a.second:after {
+                right: 0;
+            }
+
+            a.third:after, a.sixth:before, a.sixth:after {
+                left: 50%;
+                -webkit-transform: translateX(-50%);
+                transform: translateX(-50%);
+            }
+
+            a.fourth:before, a.fourth:after {
+                left: 0;
+            }
+
+            a.fifth:before, a.fifth:after {
+                right: 0;
+            }
+
+            a.seventh:before {
+                right: 0;
+            }
+
+            a.seventh:after {
+                left: 0;
+            }
+
+            a.eigth:before {
+                left: 0;
+            }
+
+            a.eigth:after {
+                right: 0;
+            }
+
+            a.before:hover:before, a.after:hover:after {
+                width: 100%;
+            }
+
+        .square {
+            box-sizing: border-box;
+            margin-left: -0.4em;
+            position: relative;
+            font-size: 2.5em;
+            overflow: hidden;
+        }
+
+            .square a {
+                position: static;
+                font-size: 100%;
+                padding: 0.2em 0.4em;
+            }
+
+            .square:before, .square:after {
+                content: "";
+                box-sizing: border-box;
+                transition: 0.25s all ease;
+                -webkit-backface-visibility: hidden;
+                backface-visibility: hidden;
+                position: absolute;
+                width: 5px;
+                width: 0.35rem;
+                height: 0;
+                background: #d73444;
+            }
+
+            .square:before {
+                left: 0;
+                bottom: -0.2em;
+            }
+
+            .square.individual:before {
+                transition-delay: 0.6s;
+            }
+
+            .square:after {
+                right: 0;
+                top: -0.2em;
+            }
+
+            .square.individual:after {
+                transition-delay: 0.2s;
+            }
+
+            .square a:before {
+                left: 0;
+                transition: 0.25s all ease;
+            }
+
+            .square a:after {
+                right: 0;
+                transition: 0.25s all ease;
+            }
+
+            .square.individual a:after {
+                transition: 0.25s all ease 0.4s;
+            }
+
+            .square:hover:before, .square:hover:after {
+                height: calc(100% + 0.4em);
+            }
+
+            .square:hover a:before, .square:hover a:after {
+                width: 100%;
+            }
+    </style>
+
+</head>
+<body>
+    <!-- AngularJS CRUD OPERATIONS ON COURSE API-->
+
+
+
+    <!--Link for the Previous Page-->
+    <div class="wrapper">
+        <a class="first after" href="home.html">Go Back </a>
+    </div>
+
+
+    <script>
+        //Code for Displaying All the Data from the API
+        var myapp = angular.module("myApp", []);
+        myapp.controller("myController", function ($scope, $http) {
+
+            api_URL = "http://labapi.somee.com/api/Course";
+            $scope.courseList = null;
+
+            $scope.getRecords = function () {
+                $http.get(api_URL)
+                    .then(function (result) {
+                        $scope.courseList = result.data;
+
+                    });
+            }
+            //Code for Adding a new course
+            $scope.addCourse = function () {
+
+                var myObj = { "Id": $scope.Id, "courseName": $scope.courseName, "courseCode": $scope.courseCode };
+                console.log(myObj);
+                $http.post(api_URL, myObj).then(function (res) {
+
+                    Swal.fire(
+                        'Good job!',
+                        'Record Has Been Inserted!',
+                        'success'
+                    )
+                })
+            }
+
+            //Code for Deleting a course (Not Working)
+
+            /*$scope.id = null;
+            $scope.ID = null;
+            $scope.Name = null;
+            $scope.cCode = null;
+
+            $scope.deletecourse = function (id,Id, name, CCode) {
+
+                var course = {
+                    id=id,
+                    ID: Id,
+                    Name: name,
+                    cCode: CCode
+                };
+                //Calling the service to delete the data
+                $http.delete(api_URL, JSON.stringify(course))
+                    .then(function response() {
+
+                        if (response.course) {
+
+                            Swal.fire(
+                                'Good job!',
+                                'Record Has Been Deleted!',
+                                'success'
+                            )
+                        }
+
+                    });
+
+            };*/
+
+        });
+
+
+
+
+    </script>
+    <div class="container" ng-app="myApp" ng-controller="myController">
+        <!--Form for adding a new course-->
+        <form>
+            {{getRecords()}}
+            <div class="form-group">
+                <label> Course ID</label>
+                <input class="form-control" type="text" ng-model="Id" />
+            </div>
+            <div class="form-group">
+                <label> Course Name</label>
+                <input class="form-control" type="text" ng-model="courseName" />
+            </div>
+            <div class="form-group">
+                <label> Course Code</label>
+                <input class="form-control" type="text" ng-model="courseCode" />
+            </div>
+            <div class="form-group">
+                <button ng-click="addCourse()" class="btn btn-primary" type="button">ADD Course</button>
+            </div>
+
+        </form>
+
+        <!-- Table for Displaying all The Courses-->
+        <table class="table table-hover">
+
+            <tr>
+                <th> Sr.No</th>
+                <th> Course ID</th>
+                <th> Course Name</th>
+                <th> Course Code</th>
+            </tr>
+            <tr ng-repeat="course in courseList">
+                <td>{{course.$id}}</td>
+                <td>{{course.Id}}</td>
+                <td>{{course.courseName}}</td>
+                <td>{{course.courseCode}}</td>
+
+
+            </tr>
+        </table>
+
+    </div>
+
+
+</body>
+</html>

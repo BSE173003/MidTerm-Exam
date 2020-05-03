@@ -1,0 +1,327 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>AJAX CRUD</title>
+    <script src="jquery-3.4.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/8.11.8/sweetalert2.all.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/8.11.8/sweetalert2.min.css" rel="stylesheet"/>
+    <link href="bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .wrapper {
+            margin: 3em 0;
+            
+        }
+
+        a, a:visited, a:hover, a:active {
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            position: relative;
+            transition: 0.5s color ease;
+            text-decoration: none;
+            color: #81b3d2;
+            font-size: 2.5em;
+        }
+
+            a:hover {
+                color: #d73444;
+            }
+
+            a.before:before, a.after:after {
+                content: "";
+                transition: 0.5s all ease;
+                -webkit-backface-visibility: hidden;
+                backface-visibility: hidden;
+                position: absolute;
+            }
+
+            a.before:before {
+                top: -0.25em;
+            }
+
+            a.after:after {
+                bottom: -0.25em;
+            }
+
+            a.before:before, a.after:after {
+                height: 5px;
+                height: 0.35rem;
+                width: 0;
+                background: #d73444;
+            }
+
+            a.first:after {
+                left: 0;
+            }
+
+            a.second:after {
+                right: 0;
+            }
+
+            a.third:after, a.sixth:before, a.sixth:after {
+                left: 50%;
+                -webkit-transform: translateX(-50%);
+                transform: translateX(-50%);
+            }
+
+            a.fourth:before, a.fourth:after {
+                left: 0;
+            }
+
+            a.fifth:before, a.fifth:after {
+                right: 0;
+            }
+
+            a.seventh:before {
+                right: 0;
+            }
+
+            a.seventh:after {
+                left: 0;
+            }
+
+            a.eigth:before {
+                left: 0;
+            }
+
+            a.eigth:after {
+                right: 0;
+            }
+
+            a.before:hover:before, a.after:hover:after {
+                width: 100%;
+            }
+
+        .square {
+            box-sizing: border-box;
+            margin-left: -0.4em;
+            position: relative;
+            font-size: 2.5em;
+            overflow: hidden;
+        }
+
+            .square a {
+                position: static;
+                font-size: 100%;
+                padding: 0.2em 0.4em;
+            }
+
+            .square:before, .square:after {
+                content: "";
+                box-sizing: border-box;
+                transition: 0.25s all ease;
+                -webkit-backface-visibility: hidden;
+                backface-visibility: hidden;
+                position: absolute;
+                width: 5px;
+                width: 0.35rem;
+                height: 0;
+                background: #d73444;
+            }
+
+            .square:before {
+                left: 0;
+                bottom: -0.2em;
+            }
+
+            .square.individual:before {
+                transition-delay: 0.6s;
+            }
+
+            .square:after {
+                right: 0;
+                top: -0.2em;
+            }
+
+            .square.individual:after {
+                transition-delay: 0.2s;
+            }
+
+            .square a:before {
+                left: 0;
+                transition: 0.25s all ease;
+            }
+
+            .square a:after {
+                right: 0;
+                transition: 0.25s all ease;
+            }
+
+            .square.individual a:after {
+                transition: 0.25s all ease 0.4s;
+            }
+
+            .square:hover:before, .square:hover:after {
+                height: calc(100% + 0.4em);
+            }
+
+            .square:hover a:before, .square:hover a:after {
+                width: 100%;
+            }
+    </style>
+
+</head>
+<body>
+    <!-- AJAX CRUD OPERATIONS ON COURSE API-->
+    
+    <!--Link for the Previous Page-->
+    <div class="wrapper">
+        <a class="first after" href="home.html">GO Back</a>
+    </div>
+
+    <!--Form For Adding A New Course-->
+    <form>
+
+        <div class="form-group-row">
+
+            <label class="col-sm-2 col-form-label">Course ID </label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="Id" placeholder="Enter Course ID" />
+            </div>
+
+        </div>
+        <div class="form-group-row">
+
+            <label class="col-sm-2 col-form-label">Course Name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="courseName" placeholder="Enter Course Name" />
+            </div>
+
+        </div>
+        <div class="form-group-row">
+
+            <label class="col-sm-2 col-form-label">Course Code </label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="courseCode" placeholder="Enter Course Code" /></br></br>
+            </div>
+
+        </div>
+        <div class="form-group-row">
+            <div class="col-sm-4"> </div>
+            <div class="col-sm-4">
+                <button type="button" class="form-control" id="addbtn">ADD COURSE</button></br>
+            </div>
+            <div class="col-sm-4"> </div>
+
+        </div>
+
+
+
+    </form>
+
+    <!-- Table for Displaying all Courses-->
+    <div class="container">
+
+
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Sr.No</th>
+                    <th>Course ID</th>
+                    <th>Course Name</th>
+                    <th>Course Code</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="emptbody"></tbody>
+        </table>
+    </div>
+
+    <script>
+        
+        var API_URL = "http://labapi.somee.com/api/Course";
+
+        $(document).ready(function () {
+
+            getCourseData();
+
+            //Code for adding a new course
+
+            $("#addbtn").click(function () {
+
+                var c_id = $("Id").val();
+                var c_name = $("courseName").val();
+                var c_code = $("courseCode").val();
+
+                var JsonObj = { ID: Id, C_Name: c_name, C_Code: c_code };
+                console.log(JsonObj);
+                $.ajax({
+                    
+                    type: "POST",
+                    url: API_URL,
+                    data: JSON.stringify(JsonObj),
+                    contentType: "application/json;charset=utf-8",
+                    success: function (res) { //Record gets inserted successfully
+
+                        getCourseData();
+                        Swal.fire(
+                            'Good job!',
+                            'Record Has Been Inserted!',
+                            'success'
+                        )
+
+                    },
+                    failure: function (res) {   //Record did not insert
+
+                        Swal.fire({            
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong!',
+                            footer: '<a href>Why do I have this issue?</a>'
+                        })
+                    },
+                    error: function (res) {     //Record did not insert
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong!',
+                            footer: '<a href>Why do I have this issue?</a>'
+                        })
+                    },
+                });
+
+            });
+        });
+
+        //Code for Displaying all courses
+
+        function getCourseData() {
+
+            $.ajax({
+
+                type: "GET",
+                url: API_URL,
+                success: function (res) {  //Record inserted Successfully
+
+                    console.log(res);
+                    for (r in res) {
+                        $("#emptbody").append("<tr><td>" + res[r].$id + "</td><td>" + res[r].Id + "</td><td>" + res[r].courseName + "</td><td>" + res[r].courseCode + "</td></tr>");
+                    }
+                },
+                failure: function (res) {   //Record did not insert
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops',
+                        text: 'Something went wrong',
+                        footer: 'Failure, is your internet working?'
+                    })
+                },
+                error: function (res) {       //Record did not insert
+
+                    Swal.fire({
+                        icon: '< img src="error.png" />',
+                        title: 'Oops...',
+                        text: 'Something went wrong!',
+                        footer: '<a href>Why do I have this issue?</a>'
+                    })
+                },
+            });
+
+
+        }
+
+    </script>
+
+</body>
+</html>
